@@ -23,7 +23,11 @@ class ViewStatistics(generics.ListAPIView):
     def get_queryset(self):
         from_date = self.request.data['from']
         to_date = self.request.data['to']
-        return Statistic.objects.all().filter(date__gte=from_date, date__lte=to_date).order_by('date')
+        if 'order' in self.request.data:
+            return Statistic.objects.all().filter(date__gte=from_date, date__lte=to_date).order_by(self.request.data['order'])
+        else:
+            return Statistic.objects.all().filter(date__gte=from_date, date__lte=to_date).order_by('date')
+
     serializer_class = StatisticsSerializer
     permission_classes = (IsAuthenticated, )
 
